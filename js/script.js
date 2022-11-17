@@ -1,5 +1,3 @@
-import axios from "axios";
-
 /* PUT CURRENT DAY AND HOUR */
 function formatDate(now) {
   let days = [
