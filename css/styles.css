@@ -180,6 +180,7 @@ body {
 .now-weather .weather-icon {
   width: 45px;
   margin-left: 20px;
+  display: contents;
 }
 
 /* FIVE DAYS */
