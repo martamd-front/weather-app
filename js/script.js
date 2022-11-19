@@ -22,6 +22,23 @@ function formatDate(timestamp) {
   return `${day} ${hours}:${minutes}`;
 }
 
+
+/* CURRENT HOUR */
+ function getTimeCity(response) {
+  document.querySelector("#today-hour").innerHTML = 
+  formatDate(response.data.datetime);;
+} 
+
+function timeCity(city) {
+  let apiKey = "a5982d63d74e479c94f562be7bc61e04&location";
+  let apiTimeUrl = `https://timezone.abstractapi.com/v1/current_time/?api_key=${apiKey}&location=${city}`;
+  axios.get(apiTimeUrl).then(getTimeCity);
+}
+
+
+
+
+
 /* SHOW AND SEARCH CITY WEATHER */
 
 function showWeather(response) {
@@ -37,9 +54,7 @@ function showWeather(response) {
     response.data.wind.speed
   );
 
-  document.querySelector("#today-hour").innerHTML = 
-  formatDate(response.data.dt * 1000)
-  ;
+
   let iconElement = document.querySelector("#icon");
   iconElement.setAttribute(
     "src",
@@ -47,6 +62,7 @@ function showWeather(response) {
   );
   iconElement.setAttribute("alt", response.data.weather[0].description);
 }
+
 
 function searchCity(city) {
   let apiKey = "fda3688b1db05987dd5d07c237aecfba";
@@ -59,6 +75,7 @@ function handleSubmit(event) {
   event.preventDefault();
   let city = document.querySelector("#city-input").value;
   searchCity(city);
+  timeCity(city)
 }
 
 /* GET UNIT TEMP  */
@@ -74,11 +91,15 @@ function tempToFahrenheit(event) {
   tempCity.innerHTML = Math.round((celsiusTemperature * 9) / 5 + 32);
 }
 
+
+
+
 let searchForm = document.querySelector("#search-form");
 searchForm.addEventListener("submit", handleSubmit);
 
 let celsiusTemperature = null;
 searchCity("Barcelona");
+timeCity("Barcelona")
 
 let unitCelsius = document.querySelector("#celsius-link");
 unitCelsius.addEventListener("click", tempToCelsius);
