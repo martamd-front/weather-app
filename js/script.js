@@ -8,7 +8,7 @@ function formatDate(timestamp) {
     "Wednesday",
     "Thursday",
     "Friday",
-    "Saturday"
+    "Saturday",
   ];
   let day = days[date.getDay()];
   let hours = date.getHours();
@@ -22,12 +22,19 @@ function formatDate(timestamp) {
   return `${day} ${hours}:${minutes}`;
 }
 
+function formatDay(timestamp) {
+  let date = new Date(timestamp * 1000);
+  let days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  let day = days[date.getDay()];
+  return `${day}`;
+}
 
 /* CURRENT HOUR */
- function getTimeCity(response) {
-  document.querySelector("#today-hour").innerHTML = 
-  formatDate(response.data.datetime);;
-} 
+function getTimeCity(response) {
+  document.querySelector("#today-hour").innerHTML = formatDate(
+    response.data.datetime
+  );
+}
 
 function timeCity(city) {
   let apiKey = "a5982d63d74e479c94f562be7bc61e04&location";
@@ -35,18 +42,51 @@ function timeCity(city) {
   axios.get(apiTimeUrl).then(getTimeCity);
 }
 
+/* GET FIVE DAYS FORECAST */
+function displayForecast(response) {
+  let forecast = response.data.daily;
+  let forecastElement = document.querySelector("#forecast");
+  let forecastHTML = `<div class="row text-center">`;
+  forecast.forEach(function (forecastDay, index) {
+    if (index < 5) {
+      forecastHTML =
+        forecastHTML +
+        `  
+      <div class="col-xs-2 col">
+        <h4>${formatDay(forecastDay.time)}</h4>
+        <div class="weather-icon"><img src="http://shecodes-assets.s3.amazonaws.com/api/weather/icons/${
+          forecastDay.condition.icon
+        }.png" alt="${forecastDay.condition.description}" /></div>
+        <p><strong>${Math.round(
+          forecastDay.temperature.maximum
+        )}°</strong> ${Math.round(forecastDay.temperature.minimum)}°</p>
+      </div>`;
+    }
+  });
+  forecastHTML = forecastHTML + `</div>`;
+  forecastElement.innerHTML = forecastHTML;
+}
+
+function getForecast(city) {
+  let clearCity = city.replace(/\s/g, "+");
+  let apiKey = "d0b6fd5o79fcec65aa41f33c5203dt9a";
+  let unit = "metric";
+  let apiUrl = `https://api.shecodes.io/weather/v1/forecast?query=${clearCity}&key=${apiKey}&units=${unit}`;
+  axios.get(apiUrl).then(displayForecast);
+}
 
 /* SHOW AND SEARCH CITY WEATHER */
 
 function showWeather(response) {
-  celsiusTemperature = response.data.main.temp;
-  document.querySelector("#city").innerHTML = response.data.name;
+  celsiusTemperature = response.data.temperature.current;
+  document.querySelector("#city").innerHTML = response.data.city;
   document.querySelector("#temp-city").innerHTML = Math.round(
-    response.data.main.temp
+    response.data.temperature.current
   );
   document.querySelector("#description").innerHTML =
-    response.data.weather[0].main;
-  document.querySelector("#humidity").innerHTML = response.data.main.humidity;
+    response.data.condition.description;
+  document.querySelector("#humidity").innerHTML =
+    response.data.temperature.humidity;
   document.querySelector("#wind").innerHTML = Math.round(
     response.data.wind.speed
   );
@@ -54,16 +94,16 @@ function showWeather(response) {
   let iconElement = document.querySelector("#icon");
   iconElement.setAttribute(
     "src",
-    `http://openweathermap.org/img/wn/${response.data.weather[0].icon}@2x.png`
+    `http://shecodes-assets.s3.amazonaws.com/api/weather/icons/${response.data.condition.icon}.png`
   );
-  iconElement.setAttribute("alt", response.data.weather[0].description);
+  iconElement.setAttribute("alt", response.data.condition.description);
+  getForecast(response.data.city);
 }
 
-
 function searchCity(city) {
-  let apiKey = "fda3688b1db05987dd5d07c237aecfba";
+  let apiKey = "d0b6fd5o79fcec65aa41f33c5203dt9a";
   let unit = "metric";
-  let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=${unit}&appid=${apiKey}`;
+  let apiUrl = `https://api.shecodes.io/weather/v1/current?query=${city}&key=${apiKey}&units=${unit}`;
   axios.get(apiUrl).then(showWeather);
 }
 
@@ -71,7 +111,7 @@ function handleSubmit(event) {
   event.preventDefault();
   let city = document.querySelector("#city-input").value;
   searchCity(city);
-  timeCity(city)
+  timeCity(city);
 }
 
 /* GET UNIT TEMP  */
@@ -81,23 +121,22 @@ function tempToCelsius(event) {
   let tempCity = document.querySelector("#temp-city");
   tempCity.innerHTML = Math.round(celsiusTemperature);
   unitCelsius.classList.add("active");
-  unitFahrenheit.classList.remove("active"); 
+  unitFahrenheit.classList.remove("active");
 }
 function tempToFahrenheit(event) {
   event.preventDefault();
   let tempCity = document.querySelector("#temp-city");
   tempCity.innerHTML = Math.round((celsiusTemperature * 9) / 5 + 32);
   unitFahrenheit.classList.add("active");
-  unitCelsius.classList.remove("active"); 
+  unitCelsius.classList.remove("active");
 }
-
 
 let searchForm = document.querySelector("#search-form");
 searchForm.addEventListener("submit", handleSubmit);
 
 let celsiusTemperature = null;
 searchCity("Barcelona");
-timeCity("Barcelona")
+timeCity("Barcelona");
 
 let unitCelsius = document.querySelector("#celsius-link");
 unitCelsius.addEventListener("click", tempToCelsius);
