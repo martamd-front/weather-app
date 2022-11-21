@@ -177,6 +177,13 @@ body {
   color: #d485ff;
 }
 
+
+.now-weather .temperature .units .active, .now-weather .temperature .units .active:hover{
+  color: white;
+  cursor: default;
+  opacity: 1;
+}
+
 .now-weather .weather-icon {
   width: 45px;
   margin-left: 20px;

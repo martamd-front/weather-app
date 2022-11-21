@@ -36,9 +36,6 @@ function timeCity(city) {
 }
 
 
-
-
-
 /* SHOW AND SEARCH CITY WEATHER */
 
 function showWeather(response) {
@@ -53,7 +50,6 @@ function showWeather(response) {
   document.querySelector("#wind").innerHTML = Math.round(
     response.data.wind.speed
   );
-
 
   let iconElement = document.querySelector("#icon");
   iconElement.setAttribute(
@@ -84,14 +80,16 @@ function tempToCelsius(event) {
   event.preventDefault();
   let tempCity = document.querySelector("#temp-city");
   tempCity.innerHTML = Math.round(celsiusTemperature);
+  unitCelsius.classList.add("active");
+  unitFahrenheit.classList.remove("active"); 
 }
 function tempToFahrenheit(event) {
   event.preventDefault();
   let tempCity = document.querySelector("#temp-city");
   tempCity.innerHTML = Math.round((celsiusTemperature * 9) / 5 + 32);
+  unitFahrenheit.classList.add("active");
+  unitCelsius.classList.remove("active"); 
 }
-
-
 
 
 let searchForm = document.querySelector("#search-form");
