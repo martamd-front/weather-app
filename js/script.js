@@ -59,9 +59,9 @@ function displayForecast(response) {
         }.png" alt="${forecastDay.condition.description}" /></div>
         <p><strong class="forecast-temp">${Math.round(
           forecastDay.temperature.maximum
-        )}°</strong> <span class="forecast-temp">${Math.round(
+        )}</strong><strong>°</strong> <span class="forecast-temp">${Math.round(
           forecastDay.temperature.minimum
-        )}°</span></p>
+        )}</span>°</p>
       </div>`;
     }
   });
