@@ -116,53 +116,8 @@ function handleSubmit(event) {
   timeCity(city);
 }
 
-/* GET UNIT TEMP  */
-
-function celciusToFarenheit(celcius) {
-  let farenheit = (celcius * 9) / 5 + 32;
-  return Math.round(farenheit);
-}
-
-function farenheitToCelcius(farenheit) {
-  let celcius = ((farenheit - 32) * 5) / 9;
-  return Math.round(celcius);
-}
-
-function tempToCelsius(event) {
-  event.preventDefault();
-  let tempCity = document.querySelector("#temp-city");
-  tempCity.innerHTML = Math.round(celsiusTemperature);
-  let forecastTemp = document.querySelectorAll(".forecast-temp");
-  forecastTemp.forEach(function (element) {
-    let value = farenheitToCelcius(parseInt(element.textContent));
-    element.textContent = value;
-  });
-  unitCelsius.classList.add("active");
-  unitFahrenheit.classList.remove("active");
-}
-
-function tempToFahrenheit(event) {
-  event.preventDefault();
-  let tempCity = document.querySelector("#temp-city");
-  tempCity.innerHTML = celciusToFarenheit(celsiusTemperature);
-  let forecastTemp = document.querySelectorAll(".forecast-temp");
-  forecastTemp.forEach(function (element) {
-    let value = celciusToFarenheit(parseInt(element.textContent));
-    element.textContent = value;
-  });
-  unitFahrenheit.classList.add("active");
-  unitCelsius.classList.remove("active");
-}
-
 let searchForm = document.querySelector("#search-form");
 searchForm.addEventListener("submit", handleSubmit);
 
-let celsiusTemperature = null;
 searchCity("Barcelona");
 timeCity("Barcelona");
-
-let unitCelsius = document.querySelector("#celsius-link");
-unitCelsius.addEventListener("click", tempToCelsius);
-
-let unitFahrenheit = document.querySelector("#fahrenheit-link");
-unitFahrenheit.addEventListener("click", tempToFahrenheit);
